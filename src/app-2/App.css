@@ -1,0 +1,9 @@
+.app-2-container {
+    margin: 50px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 5px;
+    color:darkorchid;
+}

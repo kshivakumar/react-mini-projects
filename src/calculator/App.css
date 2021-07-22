@@ -1,0 +1,40 @@
+.calc-display {
+    text-align: right;
+    width: calc(100% - 15px);
+    font-size: xx-large;
+    height: 1.5em;
+    margin: 7px auto;
+}
+
+.calc-container {
+    margin: 50px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 250px;
+    border: solid 7px;
+    padding: 5px;
+}
+
+.calc-btnLayout {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.calc-btnLayout > div {
+    display: flex;
+}
+
+.calc-btn {
+    width: 25%;
+    height: 2.2em;
+    margin: 5px;
+    font-size: large;
+    border-radius: 7px;
+}
+
+.calc-btnZero {
+    width: 58%;
+}
