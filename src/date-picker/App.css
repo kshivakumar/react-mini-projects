@@ -1,0 +1,86 @@
+.dtpkr-container {
+    margin: 50px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 5px;
+}
+
+.dtpkr-display {
+    border: solid blue 1px;
+    padding: 5px;
+    font-size: x-large;
+    margin-top: 10px;
+}
+
+.dtpkr-calendar {
+    display: flex;
+    flex-direction: column;
+    border: solid cyan 2px;
+    border-radius: 5px;
+    padding: 5px;
+    width: 350px;
+    height: 320px;
+}
+
+.dtpkr-monthyearselector {
+    margin: 10px 5px;
+    display: flex;
+    justify-content: space-around;
+    height: 30px;
+}
+
+.dtpkr-monthview {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    
+}
+
+.dtpkr-weekday {
+    box-sizing: border-box;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    padding: 5px;
+    border-bottom: solid 1px gray;
+}
+
+.dtpkr-weekday > span {
+    margin: auto 5px;
+    width: 14%;
+    color: gray;
+}
+
+.dtpkr-weekday > span:hover {
+    cursor: default;
+}
+
+.dtpkr-weekrow {
+    display: flex;
+    width: 100%;
+}
+
+.dtpkr-date {
+    display: block;
+    box-sizing: border-box;
+    margin: auto 5px;
+    width: 14%;
+    padding: 5px;
+    border: solid transparent 2px;
+}
+
+.dtpkr-date:hover {
+    cursor: default;
+    border: solid cyan 2px;
+}
+
+.dtpkr-selecteddate {
+    background-color: lightsalmon;
+}
+
+.dtpkr-date-null:hover {
+    cursor: default;
+    border: none
+}

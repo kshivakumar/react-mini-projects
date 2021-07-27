@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import "./App.css";
 
-const PROJECTS_LIST = ["calculator", "app-2", "app-3"];
+const PROJECTS_LIST = ["calculator", "date-picker", "app-3"];
 
 const PROJECTS = new Map();
 PROJECTS_LIST.forEach(proj =>
