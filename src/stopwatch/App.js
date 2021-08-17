@@ -4,17 +4,17 @@ import "./App.css";
 const formatTime = (centiSecs) => {
   let [hrs, mins, secs] = [0, 0, 0];
 
-  if (centiSecs > 100) {
+  if (centiSecs > 99) {
     secs = Math.floor(centiSecs / 100);
     centiSecs = centiSecs % 100;
   }
 
-  if (secs > 3600) {
+  if (secs > 3659) {
     hrs = Math.floor(secs / 3600);
     secs = secs % 3600;
   }
 
-  if (secs > 60) {
+  if (secs > 59) {
     mins = Math.floor(secs / 60);
     secs = secs % 60;
   }
