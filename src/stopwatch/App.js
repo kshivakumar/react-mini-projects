@@ -1,31 +1,31 @@
-import React, { useState, useEffect, useCallback } from "react";
-import "./App.css";
+import React from "react"
+import "./App.css"
 
-const formatTime = (centiSecs) => {
-  let [hrs, mins, secs] = [0, 0, 0];
+const formatTime = centiSecs => {
+  let [hrs, mins, secs] = [0, 0, 0]
 
   if (centiSecs > 99) {
-    secs = Math.floor(centiSecs / 100);
-    centiSecs = centiSecs % 100;
+    secs = Math.floor(centiSecs / 100)
+    centiSecs = centiSecs % 100
   }
 
   if (secs > 3659) {
-    hrs = Math.floor(secs / 3600);
-    secs = secs % 3600;
+    hrs = Math.floor(secs / 3600)
+    secs = secs % 3600
   }
 
   if (secs > 59) {
-    mins = Math.floor(secs / 60);
-    secs = secs % 60;
+    mins = Math.floor(secs / 60)
+    secs = secs % 60
   }
 
-  hrs = String(hrs).padStart(2, "0");
-  mins = String(mins).padStart(2, "0");
-  secs = String(secs).padStart(2, "0");
-  centiSecs = String(centiSecs).padStart(2, "0");
+  hrs = String(hrs).padStart(2, "0")
+  mins = String(mins).padStart(2, "0")
+  secs = String(secs).padStart(2, "0")
+  centiSecs = String(centiSecs).padStart(2, "0")
 
-  return `${hrs}:${mins}:${secs}.${centiSecs}`;
-};
+  return `${hrs}:${mins}:${secs}.${centiSecs}`
+}
 
 const Lap = ({ seq, splitTime, lapTime }) => {
   return (
@@ -34,8 +34,8 @@ const Lap = ({ seq, splitTime, lapTime }) => {
       <span>{splitTime}</span>
       <span>{lapTime}</span>
     </div>
-  );
-};
+  )
+}
 
 const Laps = React.memo(({ laps }) => {
   return (
@@ -49,78 +49,94 @@ const Laps = React.memo(({ laps }) => {
         />
       ))}
     </div>
-  );
-});
+  )
+})
 
-const StartBtn = ({ onClick }) => <button onClick={onClick}>Start</button>;
+const StartBtn = ({ onClick }) => <button onClick={onClick}>Start</button>
 
 const PauseResumeBtn = React.memo(({ timerStatus, onClick }) => (
   <button onClick={onClick}>{timerStatus ? "Pause" : "Resume"}</button>
-));
+))
 
 const LapResetBtn = React.memo(({ timerStatus, onClick }) => (
   <button onClick={onClick}>{timerStatus ? "Lap" : "Reset"}</button>
-));
+))
 
-function App() {
-  const [centiSeconds, setcentiSeconds] = useState(0);
-  const [laps, setLaps] = useState([]);
-  const [intervalId, setIntervalId] = useState(null);
-
-  const runTimer = () => {
-    setIntervalId(setInterval(() => setcentiSeconds((state) => state + 1), 10));
-  };
-
-  const clearTimer = () => {
-    clearInterval(intervalId);
-    setIntervalId(null);
-  };
-
-  useEffect(() => () => clearTimer, []);
-
-  const handleStart = () => {
-    runTimer();
-  };
-
-  const handlePauseResume = useCallback(() => {
-    if (intervalId) {
-      clearTimer();
-    } else {
-      runTimer();
+class App extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      centiSeconds: 0,
+      laps: [],
+      intervalId: null,
     }
-  }, [intervalId]);
+  }
 
-  // Can't use useCallback here, centiSeconds is a dependency.
-  // If centiSeconds is not used as a depenency,
-  // only its intial value(0) is used by setLaps(closure behaviour)
-  // Make this component class based?
-  const handleLapReset = () => {
-    if (intervalId) {
-      setLaps((state) => [...state, centiSeconds]);
+  runTimer = () => {
+    const intervalId = setInterval(
+      () =>
+        this.setState(state => {
+          return { ...state, centiSeconds: state.centiSeconds + 1 }
+        }),
+      10
+    )
+
+    this.setState(state => {
+      return { ...state, intervalId: intervalId }
+    })
+  }
+
+  clearTimer = () => {
+    clearInterval(this.state.intervalId)
+    this.setState(state => {
+      return { ...state, intervalId: null }
+    })
+  }
+
+  componentWillUnmount = () => this.clearTimer()
+
+  handleStart = () => this.runTimer()
+
+  handlePauseResume = () =>
+    this.state.intervalId ? this.clearTimer() : this.runTimer()
+
+  handleLapReset = () => {
+    if (this.state.intervalId) {
+      this.setState(state => {
+        return { ...state, laps: [...state.laps, state.centiSeconds] }
+      })
     } else {
-      clearTimer();
-      setcentiSeconds(0);
-      setLaps([]);
+      this.clearTimer()
+      this.setState(state => {
+        return { ...state, centiSeconds: 0, laps: [] }
+      })
     }
-  };
+  }
 
-  return (
-    <div className="stopwatch-container">
-      <span className="stopwatch-time">{formatTime(centiSeconds)}</span>
-      {centiSeconds === 0 ? (
-        <StartBtn onClick={handleStart} />
-      ) : (
-        <div className="stopwatch-two-btns">
-          <PauseResumeBtn
-            timerStatus={intervalId}
-            onClick={handlePauseResume}
-          />
-          <LapResetBtn timerStatus={intervalId} onClick={handleLapReset} />
-        </div>
-      )}
-      {laps ? <Laps laps={laps} /> : null}
-    </div>
-  );
+  render() {
+    return (
+      <div className="stopwatch-container">
+        <span className="stopwatch-time">
+          {formatTime(this.state.centiSeconds)}
+        </span>
+        {this.state.centiSeconds === 0 ? (
+          <StartBtn onClick={this.handleStart} />
+        ) : (
+          <div className="stopwatch-two-btns">
+            <PauseResumeBtn
+              timerStatus={this.state.intervalId}
+              onClick={this.handlePauseResume}
+            />
+            <LapResetBtn
+              timerStatus={this.state.intervalId}
+              onClick={this.handleLapReset}
+            />
+          </div>
+        )}
+        {this.state.laps ? <Laps laps={this.state.laps} /> : null}
+      </div>
+    )
+  }
 }
 
-export default App;
+export default App
