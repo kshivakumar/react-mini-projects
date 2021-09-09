@@ -1,24 +1,32 @@
-import React from "react";
+import React from "react"
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   NavLink,
-} from "react-router-dom";
-import "./App.css";
+  useLocation,
+} from "react-router-dom"
+import "./App.css"
 
-const PROJECTS_LIST = ["calculator", "date-picker", "stopwatch"];
 
-const PROJECTS = new Map();
-PROJECTS_LIST.forEach(proj =>
-  PROJECTS.set(
-    proj,
-    React.lazy(() => import(`./${proj}/App`))
-  )
-);
+const PROJECTS = {
+  calculator: "A basic calculator similar to MacOS calculator in functionality",
+  "date-picker": "Date picker with lower and upper bound years",
+  stopwatch: "Stopwatch with minimal button re-renders",
+}
+
+const PROJECT_IDS = Array.from(Object.keys(PROJECTS))
+
+const PROJECT_COMPONENTS = PROJECT_IDS.reduce(
+  (components, projId) =>
+    Object.assign(components, {
+      [projId]: React.lazy(() => import(`./${projId}/App`)),
+    }),
+  {}
+)
 
 function Navigation() {
-  const navLinks = Array.from(PROJECTS.keys()).map((projId) => (
+  const navLinks = PROJECT_IDS.map(projId => (
     <NavLink
       className="navLink"
       activeClassName="activeNavLink"
@@ -27,28 +35,53 @@ function Navigation() {
     >
       {projId
         .split("-")
-        .map((t) => t[0].toUpperCase() + t.slice(1))
+        .map(t => t[0].toUpperCase() + t.slice(1))
         .join(" ")}
     </NavLink>
-  ));
-  return <div className="navigation">{navLinks}</div>;
+  ))
+  return <div className="navigation">{navLinks}</div>
 }
 
 const Routes = () =>
-  Array.from(PROJECTS.keys()).map((projId) => (
+  PROJECT_IDS.map(projId => (
     <Route
       key={`/${projId}`}
       path={`/${projId}`}
-      component={PROJECTS.get(projId)}
+      component={PROJECT_COMPONENTS[projId]}
     />
-  ));
+  ))
 
 const Intro = () => (
   <div className="intro">
     <h2>React mini projects</h2>
     <h4>Select the desired project on the left</h4>
   </div>
-);
+)
+
+const Info = () => {
+  const [showDesc, setShowDesc] = React.useState(false)
+  const location = useLocation()
+  
+  React.useEffect(() => setShowDesc(false), [location])
+  
+  if (location.pathname === '/') return null
+  
+  const styles = {
+    position: "fixed",
+    right: "20px",
+    bottom: "20px",
+    zIndex: "99",
+  }
+  
+  let content = null
+  if (showDesc) {
+    const projId = location.pathname.replace("/", "")
+    content = <span style={{border: "solid 1px gray", padding: "7px"}}>{PROJECTS[projId]}</span>
+  } else {
+    content = <span style={{fontSize: "xx-large", border: "solid 2px", color: "skyblue"}}>&#x2139;</span>
+  }
+  return <div style={styles} onClick={() => setShowDesc(state => !state)}>{content}</div>
+}
 
 function App() {
   return (
@@ -62,12 +95,13 @@ function App() {
               <Route exact path="/">
                 <Intro />
               </Route>
+              <Info />
             </div>
           </React.Suspense>
         </Switch>
       </div>
     </Router>
-  );
+  )
 }
 
-export default App;
+export default App

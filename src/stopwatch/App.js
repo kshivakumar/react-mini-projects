@@ -9,7 +9,7 @@ const formatTime = centiSecs => {
     centiSecs = centiSecs % 100
   }
 
-  if (secs > 3659) {
+  if (secs > 3599) {
     hrs = Math.floor(secs / 3600)
     secs = secs % 3600
   }
